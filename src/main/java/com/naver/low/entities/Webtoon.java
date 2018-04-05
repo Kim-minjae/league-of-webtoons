@@ -30,6 +30,6 @@ public class Webtoon implements Serializable {
     private Set<User> webtoonLikedByAccounts;
 
     @ManyToOne
-    @JoinColumn(name = "webtoonist_id")
-    private Webtoonist webtoonist;
+    @JoinColumn(name = "user_id")
+    private User webtoonist;
 }

@@ -3,12 +3,12 @@ package com.naver.low.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.ToString;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -31,6 +31,18 @@ public class User implements Serializable {
     @Column(name = "user_password")
     private String userPassword;
 
+    @Column(name = "webtoonist_coins")
+    private int webtoonistCoins;
+
+    @Column(name = "webtoonist_points")
+    private int webtoonistPoints;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private List<Role> roles;
+
+    @OneToMany(mappedBy = "webtoonist", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Webtoon> webtoons = new ArrayList<>();
 
     // the reason of using Set instead of List
     // https://vladmihalcea.com/the-best-way-to-use-the-manytomany-annotation-with-jpa-and-hibernate/
