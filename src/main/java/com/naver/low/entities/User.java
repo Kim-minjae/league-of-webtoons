@@ -16,8 +16,6 @@ import java.util.Set;
 @Entity
 public class User implements Serializable {
 
-    public static final PasswordEncoder PASSWORD_ENCODER = new BCryptPasswordEncoder();
-
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
@@ -33,6 +31,9 @@ public class User implements Serializable {
     @Column(name = "user_password")
     private String userPassword;
 
+
+    // the reason of using Set instead of List
+    // https://vladmihalcea.com/the-best-way-to-use-the-manytomany-annotation-with-jpa-and-hibernate/
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "user_likes_webtoons",
             joinColumns = {@JoinColumn(name = "user_id")},
