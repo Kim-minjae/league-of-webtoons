@@ -1,10 +1,13 @@
 package com.naver.low.entities;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class Role {
 
@@ -12,7 +15,18 @@ public class Role {
     @Column(name = "role_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
+    @NaturalId
     @Column(name = "role_name")
-    private String name;
+    private RoleName name;
+
+    public Role(RoleName name) {
+        this.name = name;
+    }
+
+    public Role() {
+
+    }
+
 
 }

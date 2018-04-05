@@ -1,17 +1,15 @@
 package com.naver.low.services;
 
-import com.naver.low.entities.Role;
 import com.naver.low.entities.User;
 import com.naver.low.repositories.UserRepository;
-import org.springframework.security.core.authority.AuthorityUtils;
+import com.naver.low.security.UserPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
-@Component
+@Service
 public class LowUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -21,17 +19,18 @@ public class LowUserDetailsService implements UserDetailsService {
     }
 
     @Override
+    @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = this.userRepository.findByUserEmail(email);
-        List<Role> roles = user.getRoles();
-        String[] s = new String[roles.size()];
-        int i = 0;
-        for (Role role : roles) {
-            s[i++] = role.getName();
-        }
-        return new org.springframework.security.core.userdetails.User(
-                user.getUserEmail(),
-                user.getUserPassword(),
-                AuthorityUtils.createAuthorityList(s));
+        User user = this.userRepository.findByUserEmail(email).orElseThrow(
+                () -> new UsernameNotFoundException("User not found with user email: " + email));
+        return UserPrincipal.create(user);
+    }
+
+    @Transactional
+    public UserDetails loadUserById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(
+                () -> new UsernameNotFoundException("User not found with id : " + id)
+        );
+        return UserPrincipal.create(user);
     }
 }

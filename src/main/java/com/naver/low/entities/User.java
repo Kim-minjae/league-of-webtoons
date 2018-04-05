@@ -1,17 +1,17 @@
 package com.naver.low.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 @ToString(exclude = "userPassword")
 @Entity
 public class User implements Serializable {
@@ -37,12 +37,14 @@ public class User implements Serializable {
     @Column(name = "webtoonist_points")
     private int webtoonistPoints;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private List<Role> roles;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "webtoonist", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Webtoon> webtoons = new ArrayList<>();
+    private Set<Webtoon> webtoons = new HashSet<>();
 
     // the reason of using Set instead of List
     // https://vladmihalcea.com/the-best-way-to-use-the-manytomany-annotation-with-jpa-and-hibernate/
@@ -52,6 +54,9 @@ public class User implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "webtoon_id")})
     private Set<Webtoon> userLikesWebtoons = new HashSet<>();
 
-
-
+    public User(String userEmail, String userName, String userPassword) {
+        this.userEmail = userEmail;
+        this.userName = userName;
+        this.userPassword = userPassword;
+    }
 }
