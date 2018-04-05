@@ -13,6 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @ToString(exclude = "userPassword")
+@Table(name = "users")
 @Entity
 public class User implements Serializable {
 

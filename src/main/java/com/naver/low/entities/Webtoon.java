@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Set;
 
 @Data
+@Table(name = "webtoons")
 @Entity
 public class Webtoon implements Serializable {
 
