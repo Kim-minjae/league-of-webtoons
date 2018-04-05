@@ -14,6 +14,12 @@ public class Webtoon implements Serializable {
     @Column(name = "webtoon_id")
     private Long id;
 
+    @Column(name = "webtoon_title")
+    private String webtoonTitle;
+
+    @Column(name = "webtoon_description")
+    private String webtoonDescription;
+
     @Column(name = "webtoon_image")
     private String webtoonImage;
 
