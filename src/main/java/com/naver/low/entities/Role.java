@@ -1,6 +1,7 @@
 package com.naver.low.entities;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.NaturalId;
 
@@ -8,6 +9,8 @@ import javax.persistence.*;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@Table(name = "roles")
 @Entity
 public class Role {
 
@@ -23,10 +26,5 @@ public class Role {
     public Role(RoleName name) {
         this.name = name;
     }
-
-    public Role() {
-
-    }
-
 
 }

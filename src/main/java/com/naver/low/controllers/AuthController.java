@@ -27,7 +27,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collections;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -55,7 +54,6 @@ public class AuthController {
                         loginRequest.getPassword()
                 )
         );
-
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwt = jwtTokenProvider.generateToken(authentication);
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
@@ -66,21 +64,16 @@ public class AuthController {
         if (userRepository.existsByUserEmail(signUpRequest.getEmail())) {
             return new ResponseEntity(new ApiResponse(false, "Email Address is already taken!"), HttpStatus.BAD_REQUEST);
         }
-
         User user = new User(signUpRequest.getEmail(), signUpRequest.getUsername(), signUpRequest.getPassword());
         user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
-
-        /*Role userRole;
+        Role userRole;
         if (signUpRequest.isUserorwebtoonist()) {
             userRole = roleRepository.findByName(RoleName.ROLE_USER)
                     .orElseThrow(() -> new AppException("User Role not set."));
         } else {
             userRole = roleRepository.findByName(RoleName.ROLE_WEBTOONIST)
                     .orElseThrow(() -> new AppException("User Role not set."));
-        }*/
-
-        Role userRole = new Role(RoleName.ROLE_USER);
-
+        }
         user.setRoles(Collections.singleton(userRole));
         User result = userRepository.save(user);
         URI location = ServletUriComponentsBuilder
