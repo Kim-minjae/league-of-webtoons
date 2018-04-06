@@ -3,6 +3,7 @@ package com.naver.low.config;
 import com.naver.low.security.JwtAuthenticationEntryPoint;
 import com.naver.low.security.JwtAuthenticationFilter;
 import com.naver.low.services.LowUserDetailsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,16 +31,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private LowUserDetailsService lowUserDetailsService;
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(LowUserDetailsService lowUserDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
+    public SecurityConfig(LowUserDetailsService lowUserDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.lowUserDetailsService = lowUserDetailsService;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
-    @Bean
+    /*@Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter();
-    }
+    }*/
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
@@ -86,6 +89,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/auth/**")
                 .permitAll()
                 .anyRequest().authenticated();
-        http.addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
     }
 }
