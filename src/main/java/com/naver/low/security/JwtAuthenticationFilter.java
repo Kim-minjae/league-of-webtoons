@@ -1,8 +1,6 @@
 package com.naver.low.security;
 
 import com.naver.low.services.LowUserDetailsService;
-import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,10 +29,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
         String jwt = getJwtFromRequest(httpServletRequest);
-        /*boolean b = tokenProvider.validateToken(jwt);
-        boolean a = StringUtils.hasText(jwt);
-        System.out.println(a);
-        System.out.println(b);*/
         if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
             Long userId = tokenProvider.getUserIdFromJWT(jwt);
             UserDetails userDetails = lowUserDetailsService.loadUserById(userId);
