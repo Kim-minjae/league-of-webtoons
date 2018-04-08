@@ -1,0 +1,5 @@
+# myinfo test
+GET http://localhost:8080/api/user/me
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI2IiwiaWF0IjoxNTIyOTkxNDk2LCJleHAiOjE1MjM1OTYyOTZ9.A_RKowsOphs-cpVM2S3_oOZDaKX6QU9uwX0SEiIwXzUbvuk6KbiQF151fiDXl5vIN8l2rWeMoIt1y3eEDpE0-A
+
+###
