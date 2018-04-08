@@ -1,0 +1,4 @@
+GET http://localhost:8080/api/users/7/roles
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI3IiwiaWF0IjoxNTIzMTY3MDAzLCJleHAiOjE1MjM3NzE4MDN9.xaTMkN_5x1pW7W8PIE_tR6L2cGcfKdzbTbRu-ikPwHWbpP5IK9NGtel3Vt3avTfRc-PxSIEI16Jq1qFaSx_etA
+
+###

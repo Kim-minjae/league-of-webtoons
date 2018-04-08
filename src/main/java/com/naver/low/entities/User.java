@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Getter
 @Setter
