@@ -66,14 +66,20 @@ public class AuthController {
         }
         User user = new User(signUpRequest.getEmail(), signUpRequest.getUsername(), signUpRequest.getPassword());
         user.setUserPassword(passwordEncoder.encode(user.getUserPassword()));
-        Role userRole;
-        if (signUpRequest.isUserorwebtoonist()) {
-            userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                    .orElseThrow(() -> new AppException("User Role not set."));
-        } else {
-            userRole = roleRepository.findByName(RoleName.ROLE_WEBTOONIST)
-                    .orElseThrow(() -> new AppException("User Role not set."));
+        RoleName role = null;
+        switch (signUpRequest.getRole()) {
+            case 1:
+                role = RoleName.ROLE_USER;
+                break;
+            case 2:
+                role = RoleName.ROLE_WEBTOONIST;
+                break;
+            case 3:
+                role = RoleName.ROLE_ADMIN;
+                break;
         }
+        Role userRole = userRole = roleRepository.findByName(role)
+                .orElseThrow(() -> new AppException("User Role not set."));
         user.setRoles(Collections.singleton(userRole));
         User result = userRepository.save(user);
         URI location = ServletUriComponentsBuilder
