@@ -11,6 +11,7 @@ import com.naver.low.payloads.SignUpRequest;
 import com.naver.low.repositories.RoleRepository;
 import com.naver.low.repositories.UserRepository;
 import com.naver.low.security.JwtTokenProvider;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -29,6 +30,7 @@ import java.net.URI;
 import java.util.Collections;
 
 @RestController
+@Slf4j
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -47,7 +49,7 @@ public class AuthController {
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<JwtAuthenticationResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUserEmail(),
@@ -60,7 +62,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
+    public ResponseEntity<ApiResponse> registerUser(@Valid @RequestBody SignUpRequest signUpRequest) {
         if (userRepository.existsByUserEmail(signUpRequest.getEmail())) {
             return new ResponseEntity(new ApiResponse(false, "Email Address is already taken!"), HttpStatus.BAD_REQUEST);
         }
@@ -77,6 +79,8 @@ public class AuthController {
             case 3:
                 role = RoleName.ROLE_ADMIN;
                 break;
+
+                default:    log.error("default case occurred");             break;
         }
         Role userRole = roleRepository.findByName(role)
                 .orElseThrow(() -> new AppException("User Role not set."));
