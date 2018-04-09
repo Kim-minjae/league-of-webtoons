@@ -19,25 +19,25 @@ import javax.validation.Valid;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/users")
 public class UserController {
 
     UserRepository userRepository;
 
-    @GetMapping("/users/me")
+    @GetMapping("/me")
     // @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WEBTOONIST')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
         UserSummary userSummary = new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getEmail());
         return userSummary;
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public UserProfile getUserProfile(@PathVariable(value = "id") Long id) {
         User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User", "userid", id));
         return new UserProfile(user.getId(), user.getUserName(), user.getUserEmail());
     }
 
-    @PatchMapping("/users/me")
+    @PatchMapping("/me")
     public ResponseEntity<?> updateCurrentUser(@Valid @RequestBody SignUpRequest updateRequest, @CurrentUser UserPrincipal currentUser) {
         User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> new ResourceNotFoundException("User", "userid", currentUser.getId()));
         user.setUserName(updateRequest.getUsername());
@@ -45,5 +45,12 @@ public class UserController {
         // is it okay to have password update login here?
         userRepository.save(user);
         return ResponseEntity.ok(new ApiResponse(true, "User updated successfully."));
+    }
+
+    @DeleteMapping("/me")
+    public ResponseEntity<?> deleteCurrentUser(@CurrentUser UserPrincipal currentUser) {
+        User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> new ResourceNotFoundException("User", "userid", currentUser.getId()));
+        userRepository.delete(user);
+        return ResponseEntity.ok((new ApiResponse(true, "User deleted successfully.")));
     }
 }
