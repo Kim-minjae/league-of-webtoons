@@ -1,0 +1,12 @@
+PATCH http://localhost:8080/api/users/me
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI3IiwiaWF0IjoxNTIzMjQ3MjY4LCJleHAiOjE1MjM4NTIwNjh9.aCfZzI6f1dPKVEOqToe8XNeO8NgLV0oX-KjlsUASdn-Ory-YlfMb4EczT0FFex1qvafc4ehvjYvH8mov8gffXQ
+
+{
+	"username": "나야나updated",
+	"email": "nayana@gmail.com",
+	"password": "0987654321",
+	"role": 3
+}
+
+###
