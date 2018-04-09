@@ -11,6 +11,7 @@ import com.naver.low.payloads.SignUpRequest;
 import com.naver.low.repositories.RoleRepository;
 import com.naver.low.repositories.UserRepository;
 import com.naver.low.security.JwtTokenProvider;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.HashSet;
 
+@AllArgsConstructor
 @RestController
 @Slf4j
 @RequestMapping("/api/auth")
@@ -40,14 +42,6 @@ public class AuthController {
     RoleRepository roleRepository;
     PasswordEncoder passwordEncoder;
     JwtTokenProvider jwtTokenProvider;
-
-    public AuthController(AuthenticationManager authenticationManager, UserRepository userRepository, RoleRepository roleRepository, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider) {
-        this.authenticationManager = authenticationManager;
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
-        this.passwordEncoder = passwordEncoder;
-        this.jwtTokenProvider = jwtTokenProvider;
-    }
 
     @PostMapping("/signin")
     public ResponseEntity<JwtAuthenticationResponse> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -81,7 +75,9 @@ public class AuthController {
                 role = RoleName.ROLE_ADMIN;
                 break;
 
-                default:    log.error("default case occurred");             break;
+            default:
+                log.error("default case occurred");
+                break;
         }
         Role userRole = roleRepository.findByName(role)
                 .orElseThrow(() -> new AppException("User Role not set."));
