@@ -1,12 +1,12 @@
 package com.naver.low.controllers;
 
+import com.naver.low.payloads.CreateWebtoonRequest;
 import com.naver.low.repositories.WebtoonRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @AllArgsConstructor
 @RestController
@@ -17,7 +17,7 @@ public class WebtoonController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_WEBTOONIST')")
-    public ResponseEntity<?> uploadWebtoon () {
+    public ResponseEntity<?> uploadWebtoon (@RequestParam("file") MultipartFile file, @RequestBody CreateWebtoonRequest createWebtoonRequest) {
         return null;
     }
 
