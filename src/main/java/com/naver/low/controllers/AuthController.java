@@ -28,6 +28,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collections;
+import java.util.HashSet;
 
 @RestController
 @Slf4j
@@ -84,7 +85,7 @@ public class AuthController {
         }
         Role userRole = roleRepository.findByName(role)
                 .orElseThrow(() -> new AppException("User Role not set."));
-        user.setRoles(Collections.singleton(userRole));
+        user.setRoles((HashSet<Role>) Collections.singleton(userRole));
         User result = userRepository.save(user);
         URI location = ServletUriComponentsBuilder
                 .fromCurrentContextPath().path("/users/{userName}")

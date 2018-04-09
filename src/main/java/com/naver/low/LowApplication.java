@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LowApplication /*implements CommandLineRunner */{
+public class LowApplication /*implements CommandLineRunner */ {
 
 	@Autowired
 	RoleRepository roleRepository;

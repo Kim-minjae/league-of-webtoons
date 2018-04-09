@@ -28,7 +28,6 @@ public class UserController {
     @GetMapping("/user/me")
     // @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WEBTOONIST')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
-        UserSummary userSummary = new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getEmail());
-        return userSummary;
+        return  new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getEmail());
     }
 }
