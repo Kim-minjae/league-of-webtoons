@@ -3,9 +3,12 @@
     <div class="info-content">
       <img src="@/assets/logo.png"/>
 
-      <h5>{{info.username}}</h5>
-      
-      <span>{{info.info}}</span>
+      <div class="info-text">
+
+        <h5>{{info.username}}</h5>
+        
+        <span>{{info.info}}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -29,6 +32,9 @@ export default {
   width: 100%
 }
 .info-content{
+  width:100%;
+}
+.info-text{
   width:100%;
 }
 </style>
