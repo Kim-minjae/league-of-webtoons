@@ -6,9 +6,10 @@ import lombok.Setter;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 
 @Getter
-@Setter
 public class SignUpRequest {
 
     @NotBlank
@@ -26,4 +27,23 @@ public class SignUpRequest {
 
     private int role;
 
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setEmail(String email) {
+        try {
+            this.email = URLDecoder.decode(email, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setRole(int role) {
+        this.role = role;
+    }
 }
