@@ -1,0 +1,4 @@
+GET http://localhost:8080/api/users/7
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI3IiwiaWF0IjoxNTIzMjQ2NTU4LCJleHAiOjE1MjM4NTEzNTh9.6HyqLxniurw3OHgRN_819JU04YY9mpSmUh4oAvNUIUj8oUx-hT7a0ivoaN04eX9J9wN6WHX6QhDBfQ0V5x03bg
+
+###

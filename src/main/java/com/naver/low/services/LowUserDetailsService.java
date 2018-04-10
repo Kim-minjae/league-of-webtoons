@@ -3,6 +3,7 @@ package com.naver.low.services;
 import com.naver.low.entities.User;
 import com.naver.low.repositories.UserRepository;
 import com.naver.low.security.UserPrincipal;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -27,6 +28,7 @@ public class LowUserDetailsService implements UserDetailsService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
     public UserDetails loadUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new UsernameNotFoundException("User not found with id : " + id)
