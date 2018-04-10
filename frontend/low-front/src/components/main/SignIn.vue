@@ -1,11 +1,7 @@
 <template>
-  <div id="signup">
+  <div id="signin">
     <img src="@/assets/logo.png"/>
-    <div id="signup-box">
-      <div class="form-group">
-        <label>username</label>
-        <input class="form-control" v-model="username"/>
-      </div>
+    <div id="signin-box">
       <div class="form-group">
         <label>email</label>
         <input class="form-control" v-model="email"/>
@@ -15,15 +11,7 @@
         <input class="form-control" v-model="password"/>
       </div>
       <div class="form-group">
-        <label>user/webtoonist</label>
-        <input type="radio" id="one" value="1" v-model="picked">
-         <label for="one">유저</label>
-        <br>
-        <input type="radio" id="two" value="2" v-model="picked">
-        <label for="two">작가</label>
-      </div>
-      <div class="form-group">
-        <button class="btn btn-default" @click="_signUp">가입</button>
+        <button class="btn btn-default" @click="_signIn">로그인</button>
       </div>
     </div>
   </div>
@@ -32,7 +20,7 @@
 <script>
 import axios from 'axios'
 const headers = {
-  'Content-type': 'application/x-www-form-urlencoded'
+  'Content-type': 'application/json'
 }
 export default {
   name: 'sign-up',
@@ -45,16 +33,14 @@ export default {
     }
   },
   methods: {
-    _signUp: function () {
+    _signIn: function () {
       let params = new URLSearchParams()
-      params.append('username', this.username)
-      params.append('email', this.email)
+      params.append('userEmail', this.email)
       params.append('password', this.password)
-      params.append('role', this.picked)
       console.log(params.toString())
 
 
-      axios.post("http://localhost:8080/api/auth/signup",headers,params).then(response => {
+      axios.post("http://localhost:8080/api/auth/signin",headers,params).then(response => {
         console.log(response)
       }).catch(error => {
         console.log(error)
@@ -65,10 +51,10 @@ export default {
 </script>
 
 <style scoped>
-#signup{
+#signin{
   text-align: center
 }
-#signup-box{
+#signin-box{
   border: 1px solid;
   padding: 10px;
   box-shadow: 2px 3px #888888;
