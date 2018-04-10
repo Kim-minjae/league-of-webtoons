@@ -1,15 +1,17 @@
 package com.naver.low.payloads;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class CreateWebtoonRequest {
+@AllArgsConstructor
+public class WebtoonSummary {
 
+    private Long id;
     private String webtoonTitle;
-    private String webtoonDescription;
-    private String webtoonImage;
     private String webtoonThumbnail;
+    private String webtoonistName;
 
 }
