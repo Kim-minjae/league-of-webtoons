@@ -1,5 +1,5 @@
 # myinfo test
-GET http://localhost:8080/api/user/me
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI3IiwiaWF0IjoxNTIzMTY1ODA3LCJleHAiOjE1MjM3NzA2MDd9.w381VNBZHZ2gxtR9L7OkrfnPcZOzDqiOow8XeLZctNDI_2SKUEdL7kBz0TVv4I_1wzQO0E1foar4XMLKxtoUHA
+GET http://localhost:8080/api/users/me
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI3IiwiaWF0IjoxNTIzMzI3OTM0LCJleHAiOjE1MjM5MzI3MzR9.4SwEJFlWsBQV7YWqxq2wmbeJDghdyWQ4B7RW2GNvS1Dv6rywWMnZBoHhnmzpvnCyq6Ab-NPHYj6W22p_RIrehg
 
 ###

@@ -28,7 +28,6 @@ public class LowUserDetailsService implements UserDetailsService {
     }
 
     @Transactional
-    //@PreAuthorize("hasRole('ADMIN')")
     public UserDetails loadUserById(Long id) {
         User user = userRepository.findById(id).orElseThrow(
                 () -> new UsernameNotFoundException("User not found with id : " + id)

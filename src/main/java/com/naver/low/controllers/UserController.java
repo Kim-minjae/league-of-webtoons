@@ -37,7 +37,7 @@ public class UserController {
     }
 
     @PatchMapping("/me")
-    public ResponseEntity<?> updateCurrentUser(@Valid @RequestBody SignUpRequest updateRequest, @CurrentUser UserPrincipal currentUser) {
+    public ResponseEntity<ApiResponse> updateCurrentUser(@Valid @RequestBody SignUpRequest updateRequest, @CurrentUser UserPrincipal currentUser) {
         User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> new ResourceNotFoundException("User", "userid", currentUser.getId()));
         user.setUserName(updateRequest.getUsername());
         user.setUserEmail(updateRequest.getEmail());
@@ -47,7 +47,7 @@ public class UserController {
     }
 
     @DeleteMapping("/me")
-    public ResponseEntity<?> deleteCurrentUser(@CurrentUser UserPrincipal currentUser) {
+    public ResponseEntity<ApiResponse> deleteCurrentUser(@CurrentUser UserPrincipal currentUser) {
         User user = userRepository.findById(currentUser.getId()).orElseThrow(() -> new ResourceNotFoundException("User", "userid", currentUser.getId()));
         userRepository.delete(user);
         return ResponseEntity.ok((new ApiResponse(true, "User deleted successfully.")));
