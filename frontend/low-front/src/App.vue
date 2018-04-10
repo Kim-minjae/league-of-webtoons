@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="topnav">
-      <a href="#">QWE님</a>
+      <a href="#">{{useremail}}</a>
     </div>
     <div class="sidenav">
       <a href="#">배틀</a>
@@ -18,7 +18,17 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  computed: {
+    useremail () {
+      let email = this.$store.state.useremail
+      if (email !== '') {
+        return email
+      } else {
+        return '로그인하세요'
+      }
+    }
+  }
 }
 </script>
 
