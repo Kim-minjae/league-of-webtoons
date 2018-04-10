@@ -8,7 +8,7 @@
       </div>
       <div class="form-group">
         <label>password</label>
-        <input class="form-control" v-model="password"/>
+        <input type="password" class="form-control" v-model="password"/>
       </div>
       <div class="form-group">
         <button class="btn btn-default" @click="_signIn">로그인</button>
@@ -23,25 +23,27 @@ const headers = {
   'Content-type': 'application/json'
 }
 export default {
-  name: 'sign-up',
+  name: 'sign-in',
   data() {
     return {
-      picked: '',
-      username: '',
       email: '',
       password: ''
     }
   },
   methods: {
     _signIn: function () {
-      let params = new URLSearchParams()
-      params.append('userEmail', this.email)
-      params.append('password', this.password)
-      console.log(params.toString())
-
-
-      axios.post("http://localhost:8080/api/auth/signin",headers,params).then(response => {
+      axios.post("/api/auth/signin",{
+        userEmail: this.email,
+        password: this.password
+      }).then(response => {
         console.log(response)
+        if (response.status === 200) {
+          alert('로그인 성공')
+          this.$store.commit('setToken',response.data.token)
+        } else if (response.status === 401) {
+          alert('회원 정보를 확인하세요.')
+        }
+        
       }).catch(error => {
         console.log(error)
       })

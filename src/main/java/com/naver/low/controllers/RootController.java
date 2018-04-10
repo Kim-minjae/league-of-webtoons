@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class RootController {
-    @RequestMapping("/*")
-    public String forward() {
+    @RequestMapping(value = "/*")
+    public String redirect() {
         return "index";
     }
 }

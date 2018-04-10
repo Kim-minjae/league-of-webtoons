@@ -32,11 +32,7 @@ public class SignUpRequest {
     }
 
     public void setEmail(String email) {
-        try {
-            this.email = URLDecoder.decode(email, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        this.email = email;
     }
 
     public void setPassword(String password) {
