@@ -6,12 +6,19 @@ import com.naver.low.repositories.WebtoonRepository;
 import com.naver.low.security.CurrentUser;
 import com.naver.low.security.UserPrincipal;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
@@ -30,9 +37,25 @@ public class WebtoonController {
             return ResponseEntity.ok(new ApiResponse(false, "please select a file"));
         }
 
-        // saveFiles(Arrays.asList(files), )
+        try {
+            saveFiles(Arrays.asList(files));
+        } catch (IOException e) {
+            return new ResponseEntity(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
 
-        return null;
+        return ResponseEntity.ok(new ApiResponse(true, "Successfully uploaded"));
+    }
+
+    private List<String> saveFiles(List<MultipartFile> files) throws IOException {
+        List<String> uploadedFiles = new ArrayList<>();
+        for (MultipartFile file : files) {
+            if (file.isEmpty()) continue;
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get("/Users/augustine/webtoons/" + file.getOriginalFilename());
+            uploadedFiles.add(path.toString());
+            Files.write(path, bytes);
+        }
+        return uploadedFiles;
     }
 
 
