@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 public class RootController {
-    @RequestMapping("/*")
+    @RequestMapping("^(?!/api).*$")
     public String forward() {
         return "index";
     }
