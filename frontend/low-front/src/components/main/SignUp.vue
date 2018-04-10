@@ -54,7 +54,12 @@ export default {
       console.log(params.toString())
 
 
-      axios.post("http://localhost:8080/api/auth/signup",headers,params).then(response => {
+      axios.post("/api/auth/signup",headers,{
+        username: this.username,
+        email: this.email,
+        password: this.password,
+        role: this.picked
+      }).then(response => {
         console.log(response)
       }).catch(error => {
         console.log(error)
