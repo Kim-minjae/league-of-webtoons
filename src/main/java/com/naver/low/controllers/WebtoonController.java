@@ -5,7 +5,6 @@ import com.naver.low.exceptions.ResourceNotFoundException;
 import com.naver.low.payloads.ApiResponse;
 import com.naver.low.payloads.CreateWebtoonRequest;
 import com.naver.low.payloads.WebtoonInfo;
-import com.naver.low.payloads.WebtoonSummary;
 import com.naver.low.repositories.WebtoonRepository;
 import com.naver.low.security.CurrentUser;
 import com.naver.low.security.UserPrincipal;
@@ -34,34 +33,25 @@ public class WebtoonController {
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_WEBTOONIST')")
-    public ResponseEntity<ApiResponse> uploadWebtoon (@RequestParam("file") MultipartFile[] files,
+    public ResponseEntity<ApiResponse> uploadWebtoon (@RequestParam("webtoonfile") MultipartFile webtoonFile,
+                                                      @RequestParam("thumbnailfile") MultipartFile thumbnailFile,
                                                       @RequestBody CreateWebtoonRequest createWebtoonRequest,
                                                       @CurrentUser UserPrincipal curentUser) {
-        if (files == null) {
+        /*if (files == null) {
             // when a user doesn't attach a file, which http status code should be returned?
             return ResponseEntity.ok(new ApiResponse(false, "please select a file"));
-        }
+        }*/
 
-        try {
+        /*try {
             saveFiles(Arrays.asList(files));
         } catch (IOException e) {
             return new ResponseEntity(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
-        }
+        }*/
 
         return ResponseEntity.ok(new ApiResponse(true, "Successfully uploaded"));
     }
 
-    private List<String> saveFiles(List<MultipartFile> files) throws IOException {
-        List<String> uploadedFiles = new ArrayList<>();
-        for (MultipartFile file : files) {
-            if (file.isEmpty()) continue;
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get("/Users/augustine/webtoons/" + file.getOriginalFilename());
-            uploadedFiles.add(path.toString());
-            Files.write(path, bytes);
-        }
-        return uploadedFiles;
-    }
+
 
     //기본 crud
     @GetMapping("/{id}")

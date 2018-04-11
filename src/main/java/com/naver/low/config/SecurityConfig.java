@@ -3,6 +3,7 @@ package com.naver.low.config;
 import com.naver.low.security.JwtAuthenticationEntryPoint;
 import com.naver.low.security.JwtAuthenticationFilter;
 import com.naver.low.services.LowUserDetailsService;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+@AllArgsConstructor
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(
@@ -29,12 +31,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private LowUserDetailsService lowUserDetailsService;
     private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private JwtAuthenticationFilter jwtAuthenticationFilter;
-
-    public SecurityConfig(LowUserDetailsService lowUserDetailsService, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAuthenticationFilter jwtAuthenticationFilter) {
-        this.lowUserDetailsService = lowUserDetailsService;
-        this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
-        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
-    }
 
     @Bean(BeanIds.AUTHENTICATION_MANAGER)
     @Override
