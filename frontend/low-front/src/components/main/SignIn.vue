@@ -36,7 +36,6 @@ export default {
         userEmail: this.email,
         password: this.password
       }).then(response => {
-        console.log(response)
         if (response.status === 200) {
           alert('로그인 성공')
           this.$store.commit('setToken',response.data.accessToken)
