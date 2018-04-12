@@ -41,6 +41,7 @@ public class WebtoonService {
 
     }
 
+    // need to delete the previous files
     @Transactional
     public void updateWebtoon(CreateWebtoonRequest updateWebtoonRequest, Long webtoonId) throws IOException {
         Webtoon webtoon = webtoonRepository.findById(webtoonId).orElseThrow(() -> new ResourceNotFoundException("Webtoon", "webtoon_id", webtoonId));
