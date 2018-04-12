@@ -15,16 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 @Slf4j
 @AllArgsConstructor
@@ -38,13 +30,14 @@ public class WebtoonController {
     @PostMapping
     @PreAuthorize("hasRole('ROLE_WEBTOONIST')")
     public ResponseEntity<ApiResponse> uploadWebtoon(@ModelAttribute CreateWebtoonRequest createWebtoonRequest,
-                                                     @CurrentUser UserPrincipal curentUser) {
+                                                     @CurrentUser UserPrincipal currentUser) {
         if (createWebtoonRequest.getWebtoonImage() == null || createWebtoonRequest.getWebtoonThumbnail() == null) {
             // when a user doesn't attach a file, which http status code should be returned?
             return ResponseEntity.ok(new ApiResponse(false, "please select a file"));
         }
+        System.out.println(createWebtoonRequest);
         try {
-            webtoonService.uploadWebtoon(createWebtoonRequest, curentUser);
+            webtoonService.uploadWebtoon(createWebtoonRequest, currentUser);
         } catch (IOException e) {
             return new ResponseEntity(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
@@ -64,14 +57,17 @@ public class WebtoonController {
                 webtoon.getWebtoonist().getUserName());
     }
 
-    //작가만 자신의 웹툰을 업데이트 할 수 있도록 하려함,
-    //webtoonRepository 에 webtoon_id 로 User id뽑아오는 로직을 만들어서 대입
     @PatchMapping("/{id}")
     @PreAuthorize("(@webtoonRepository.findById(#webtoonId).get().getWebtoonist().id == #currentUser.getId())")
-    public ResponseEntity<ApiResponse> updateWebtoonThisId(@Valid CreateWebtoonRequest updateWebtoonRequest, @CurrentUser UserPrincipal currentUser, @PathVariable(value = "id") Long webtoonId) {
-        webtoonService.updateWebtoon(updateWebtoonRequest, currentUser, webtoonId);
-        Webtoon webtoon = webtoonRepository.findById(webtoonId).orElseThrow(() -> new ResourceNotFoundException("Webtoon", "webtoon_id", webtoonId));
-        webtoonRepository.save(webtoon);
+    public ResponseEntity<ApiResponse> updateWebtoon(@ModelAttribute CreateWebtoonRequest updateWebtoonRequest,
+                                                     @CurrentUser UserPrincipal currentUser,
+                                                     @PathVariable(value = "id") Long webtoonId) {
+        System.out.println(updateWebtoonRequest);
+        try {
+            webtoonService.updateWebtoon(updateWebtoonRequest, webtoonId);
+        } catch (IOException e) {
+            return new ResponseEntity(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
+        }
         return ResponseEntity.ok(new ApiResponse(true, "Webtoon updated successfully."));
     }
 

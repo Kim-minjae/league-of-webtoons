@@ -10,6 +10,7 @@ import com.naver.low.security.UserPrincipal;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ public class WebtoonService {
     private WebtoonRepository webtoonRepository;
     private UserRepository userRepository;
 
+    @Transactional
     public void uploadWebtoon(CreateWebtoonRequest createWebtoonRequest, UserPrincipal userPrincipal) throws IOException {
         MultipartFile[] files = new MultipartFile[2];
         files[0] = createWebtoonRequest.getWebtoonImage();
@@ -35,23 +37,28 @@ public class WebtoonService {
         User user = userRepository.findById(userPrincipal.getId()).orElseThrow(() -> new ResourceNotFoundException("User", "userid", userPrincipal.getId()));
         Webtoon webtoon = new Webtoon(createWebtoonRequest.getWebtoonTitle(), createWebtoonRequest.getWebtoonDescription(),
                 createWebtoonRequest.getWebtoonThumbnailFileName(), createWebtoonRequest.getWebtoonImageFileName(), user);
-
-        try {
-            webtoonRepository.save(webtoon);
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            deleteFiles(uploadedFiles);
-        }
+        webtoonRepository.save(webtoon);
 
     }
 
-    public void updateWebtoon(CreateWebtoonRequest updateWebtoonRequest, UserPrincipal userPrincipal, Long webtoonId) {
-        updateWebtoonRequest.getWebtoonTitle();
-        updateWebtoonRequest.getWebtoonDescription();
-        updateWebtoonRequest.getWebtoonImage();
-        updateWebtoonRequest.getWebtoonThumbnail();
+    @Transactional
+    public void updateWebtoon(CreateWebtoonRequest updateWebtoonRequest, Long webtoonId) throws IOException {
+        Webtoon webtoon = webtoonRepository.findById(webtoonId).orElseThrow(() -> new ResourceNotFoundException("Webtoon", "webtoon_id", webtoonId));
+        System.out.println("original one: " + webtoon.getWebtoonTitle() + ", " + webtoon.getWebtoonDescription() + ", " + webtoon.getWebtoonImage() + ", " + webtoon.getWebtoonThumbnail());
+        System.out.println("request: " + updateWebtoonRequest.toString());
+        webtoon.setWebtoonTitle(updateWebtoonRequest.getWebtoonTitle());
+        webtoon.setWebtoonDescription(updateWebtoonRequest.getWebtoonDescription());
+        MultipartFile[] files = new MultipartFile[2];
+        files[0] = updateWebtoonRequest.getWebtoonImage();
+        files[1] = updateWebtoonRequest.getWebtoonThumbnail();
+        String[] uploadedFiles = saveFiles(files, webtoon);
+        if (uploadedFiles[0] != null) webtoon.setWebtoonImage(uploadedFiles[0]);
+        if (uploadedFiles[1] != null) webtoon.setWebtoonThumbnail(uploadedFiles[1]);
+        System.out.println("updated one: " + webtoon.getWebtoonTitle() + ", " + webtoon.getWebtoonDescription() + ", " + webtoon.getWebtoonImage() + ", " + webtoon.getWebtoonThumbnail());
+        webtoonRepository.save(webtoon);
     }
 
+    @Transactional
     public void deleteWebtoon(Long webtoonId) throws IOException {
         Webtoon webtoon = webtoonRepository.findById(webtoonId).orElseThrow(() -> new ResourceNotFoundException("Webtoon", "webtoonid", webtoonId));
         String[] paths = {webtoon.getWebtoonImage(), webtoon.getWebtoonThumbnail()};
@@ -67,6 +74,21 @@ public class WebtoonService {
             int indexOfDot = files[i].getOriginalFilename().lastIndexOf('.');
             String ext = files[i].getOriginalFilename().substring(indexOfDot);
             Path path = Paths.get("/Users/augustine/webtoons/" + "webtoonist_" + id + (i == 0 ? "_webtoon" : "_thumbnail") + ext);
+            uploadedFiles[i] = path.toString();
+            log.info("Uploading - " + uploadedFiles[i]);
+            Files.write(path, bytes);
+        }
+        return uploadedFiles;
+    }
+
+    private String[] saveFiles(MultipartFile[] files, Webtoon webtoon) throws IOException {
+        String[] uploadedFiles = new String[2];
+        for (int i = 0; i < 2; i++) {
+            if (files[i] == null) continue;
+            byte[] bytes = files[i].getBytes();
+            int indexOfDot = files[i].getOriginalFilename().lastIndexOf('.');
+            String ext = files[i].getOriginalFilename().substring(indexOfDot);
+            Path path = Paths.get("/Users/augustine/webtoons/" + "webtoonist_" + webtoon.getWebtoonist().getId() + (i == 0 ? "_webtoon" : "_thumbnail") + ext);
             uploadedFiles[i] = path.toString();
             log.info("Uploading - " + uploadedFiles[i]);
             Files.write(path, bytes);

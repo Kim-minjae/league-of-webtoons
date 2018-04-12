@@ -21,11 +21,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @AllArgsConstructor
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(
-        securedEnabled = true,
-        jsr250Enabled = true,
-        prePostEnabled = true
-)
+@EnableGlobalMethodSecurity(prePostEnabled = true) // securedEnabled = true / false: enables the @Secured annotation using which you can protect your controller/service methods, jsr250Enabled = true / false: enables the @RolesAllowed annotation
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private LowUserDetailsService lowUserDetailsService;
