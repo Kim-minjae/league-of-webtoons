@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 
@@ -59,6 +60,21 @@ public class WebtoonController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("(@webtoonRepository.findById(#webtoonId).get().getWebtoonist().id == #currentUser.getId())")
+    public ResponseEntity<ApiResponse> updateWebtoon(@RequestPart CreateWebtoonRequest updateWebtoonRequest,
+                                                     @RequestPart(value = "webtoonImage") MultipartFile webtoonImage,
+                                                     @RequestPart(value = "webtoonThumbnail") MultipartFile webtoonThumbnail,
+                                                     @CurrentUser UserPrincipal currentUser,
+                                                     @PathVariable(value = "id") Long webtoonId) {
+        System.out.println(updateWebtoonRequest);
+        System.out.println(webtoonImage.getOriginalFilename());
+        System.out.println(webtoonThumbnail.getOriginalFilename());
+
+
+        return null;
+    }
+
+    /*@PatchMapping("/{id}")
+    @PreAuthorize("(@webtoonRepository.findById(#webtoonId).get().getWebtoonist().id == #currentUser.getId())")
     public ResponseEntity<ApiResponse> updateWebtoon(@ModelAttribute CreateWebtoonRequest updateWebtoonRequest,
                                                      @CurrentUser UserPrincipal currentUser,
                                                      @PathVariable(value = "id") Long webtoonId) {
@@ -69,7 +85,7 @@ public class WebtoonController {
             return new ResponseEntity(new ApiResponse(false, e.getMessage()), HttpStatus.BAD_REQUEST);
         }
         return ResponseEntity.ok(new ApiResponse(true, "Webtoon updated successfully."));
-    }
+    }*/
 
     @DeleteMapping("/{id}")
     @PreAuthorize("(@webtoonRepository.findById(#webtoonId).get().getWebtoonist().id == #currentUser.getId()) or hasRole('ROLE_ADMIN')")
