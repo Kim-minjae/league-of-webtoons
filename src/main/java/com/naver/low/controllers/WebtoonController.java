@@ -54,7 +54,7 @@ public class WebtoonController {
                 webtoon.getWebtoonHits(),
                 webtoon.getWebtoonLikedByAccounts().size(),
                 webtoon.getWebtoonist().getUserName());
-    }
+    }   
 
     @PatchMapping("/{id}")
     @PreAuthorize("(#currentUser.id == webtoonRepository.findById_(id).webtoonist.id)")
