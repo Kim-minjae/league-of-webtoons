@@ -12,6 +12,7 @@ import com.naver.low.security.UserPrincipal;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,7 +26,7 @@ public class UserController {
     UserRepository userRepository;
 
     @GetMapping("/me")
-    // @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WEBTOONIST')")
+    @PreAuthorize("hasAnyRole('ROLE_USER', 'ROLE_WEBTOONIST')")
     public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
         return  new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getEmail());
     }

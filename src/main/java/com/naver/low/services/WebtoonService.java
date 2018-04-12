@@ -1,105 +1,107 @@
 package com.naver.low.services;
 
-import com.naver.low.payloads.ApiResponse;
+import com.naver.low.entities.User;
+import com.naver.low.entities.Webtoon;
+import com.naver.low.exceptions.ResourceNotFoundException;
 import com.naver.low.payloads.CreateWebtoonRequest;
+import com.naver.low.repositories.UserRepository;
 import com.naver.low.repositories.WebtoonRepository;
-import com.naver.low.security.CurrentUser;
 import com.naver.low.security.UserPrincipal;
 import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
+
+@Slf4j
 @AllArgsConstructor
 @Service
 public class WebtoonService {
 
-    WebtoonRepository webtoonRepository;
 
-    private final Logger logger = LoggerFactory.getLogger(WebtoonService.class);
+    private WebtoonRepository webtoonRepository;
+    private UserRepository userRepository;
 
-    //Save the uploaded file to this folder
-    private static String UPLOADED_FOLDER = "F://temp//";
-
-    public ResponseEntity<?> uploadFile(
-            @RequestParam("file") MultipartFile uploadfile) {
-
-        logger.debug("Single file upload!");
-
-        if (uploadfile.isEmpty()) {
-            return new ResponseEntity("please select a file!", HttpStatus.OK);
-        }
-        try {
-            saveUploadedFiles(Arrays.asList(uploadfile));
-        } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity("Successfully uploaded - " +
-                uploadfile.getOriginalFilename(), new HttpHeaders(), HttpStatus.OK);
+    @Transactional
+    public void uploadWebtoon(CreateWebtoonRequest createWebtoonRequest, UserPrincipal userPrincipal) throws IOException {
+        MultipartFile[] files = new MultipartFile[2];
+        files[0] = createWebtoonRequest.getWebtoonImage();
+        files[1] = createWebtoonRequest.getWebtoonThumbnail();
+        String[] uploadedFiles = saveFiles(files, userPrincipal.getId());
+        createWebtoonRequest.setWebtoonImageFileName(uploadedFiles[0]);
+        createWebtoonRequest.setWebtoonThumbnailFileName(uploadedFiles[1]);
+        User user = userRepository.findById(userPrincipal.getId()).orElseThrow(() -> new ResourceNotFoundException("User", "userid", userPrincipal.getId()));
+        Webtoon webtoon = new Webtoon(createWebtoonRequest.getWebtoonTitle(), createWebtoonRequest.getWebtoonDescription(),
+                createWebtoonRequest.getWebtoonThumbnailFileName(), createWebtoonRequest.getWebtoonImageFileName(), user);
+        webtoonRepository.save(webtoon);
 
     }
 
-    @ModelAttribute
-    @PreAuthorize("hasRole('ROLE_WEBTOONIST')")
-    public ResponseEntity<ApiResponse> uploadWebtoon (@RequestParam("files") MultipartFile[] files,
-                                                      @RequestBody CreateWebtoonRequest createWebtoonRequest,
-                                                      @CurrentUser UserPrincipal curentUser) {
-
-        // Get file name
-        String uploadedFileName = Arrays.stream(files).map(x -> x.getOriginalFilename())
-                .filter(x -> !StringUtils.isEmpty(x)).collect(Collectors.joining(" , "));
-
-        if (StringUtils.isEmpty(uploadedFileName)) {
-            return new ResponseEntity("please select a file!", HttpStatus.OK);
-        }
-
-        try {
-
-            saveUploadedFiles(Arrays.asList(files));
-
-        } catch (IOException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        return new ResponseEntity("Successfully uploaded - "
-                + uploadedFileName, HttpStatus.OK);
-
+    @Transactional
+    public void updateWebtoon(CreateWebtoonRequest updateWebtoonRequest, Long webtoonId) throws IOException {
+        Webtoon webtoon = webtoonRepository.findById(webtoonId).orElseThrow(() -> new ResourceNotFoundException("Webtoon", "webtoon_id", webtoonId));
+        System.out.println("original one: " + webtoon.getWebtoonTitle() + ", " + webtoon.getWebtoonDescription() + ", " + webtoon.getWebtoonImage() + ", " + webtoon.getWebtoonThumbnail());
+        System.out.println("request: " + updateWebtoonRequest.toString());
+        webtoon.setWebtoonTitle(updateWebtoonRequest.getWebtoonTitle());
+        webtoon.setWebtoonDescription(updateWebtoonRequest.getWebtoonDescription());
+        MultipartFile[] files = new MultipartFile[2];
+        files[0] = updateWebtoonRequest.getWebtoonImage();
+        files[1] = updateWebtoonRequest.getWebtoonThumbnail();
+        String[] uploadedFiles = saveFiles(files, webtoon);
+        if (uploadedFiles[0] != null) webtoon.setWebtoonImage(uploadedFiles[0]);
+        if (uploadedFiles[1] != null) webtoon.setWebtoonThumbnail(uploadedFiles[1]);
+        System.out.println("updated one: " + webtoon.getWebtoonTitle() + ", " + webtoon.getWebtoonDescription() + ", " + webtoon.getWebtoonImage() + ", " + webtoon.getWebtoonThumbnail());
+        webtoonRepository.save(webtoon);
     }
 
-    private void saveUploadedFiles(List<MultipartFile> files) throws IOException {
+    @Transactional
+    public void deleteWebtoon(Long webtoonId) throws IOException {
+        Webtoon webtoon = webtoonRepository.findById(webtoonId).orElseThrow(() -> new ResourceNotFoundException("Webtoon", "webtoonid", webtoonId));
+        String[] paths = {webtoon.getWebtoonImage(), webtoon.getWebtoonThumbnail()};
+        deleteFiles(paths);
+        webtoonRepository.deleteById(webtoonId);
+    }
 
-        for (MultipartFile file : files) {
-
-            if (file.isEmpty()) {
-                continue; //next pls
-            }
-
-            byte[] bytes = file.getBytes();
-            Path path = Paths.get(UPLOADED_FOLDER + file.getOriginalFilename());
+    private String[] saveFiles(MultipartFile[] files, Long id) throws IOException {
+        String[] uploadedFiles = new String[2];
+        for (int i = 0; i < 2; i++) {
+            if (files[i].isEmpty()) continue;
+            byte[] bytes = files[i].getBytes();
+            int indexOfDot = files[i].getOriginalFilename().lastIndexOf('.');
+            String ext = files[i].getOriginalFilename().substring(indexOfDot);
+            Path path = Paths.get("/Users/augustine/webtoons/" + "webtoonist_" + id + (i == 0 ? "_webtoon" : "_thumbnail") + ext);
+            uploadedFiles[i] = path.toString();
+            log.info("Uploading - " + uploadedFiles[i]);
             Files.write(path, bytes);
-
         }
-
+        return uploadedFiles;
     }
 
+    private String[] saveFiles(MultipartFile[] files, Webtoon webtoon) throws IOException {
+        String[] uploadedFiles = new String[2];
+        for (int i = 0; i < 2; i++) {
+            if (files[i] == null) continue;
+            byte[] bytes = files[i].getBytes();
+            int indexOfDot = files[i].getOriginalFilename().lastIndexOf('.');
+            String ext = files[i].getOriginalFilename().substring(indexOfDot);
+            Path path = Paths.get("/Users/augustine/webtoons/" + "webtoonist_" + webtoon.getWebtoonist().getId() + (i == 0 ? "_webtoon" : "_thumbnail") + ext);
+            uploadedFiles[i] = path.toString();
+            log.info("Uploading - " + uploadedFiles[i]);
+            Files.write(path, bytes);
+        }
+        return uploadedFiles;
+    }
 
-
+    private void deleteFiles(String[] path) throws IOException {
+        for (String s : path) {
+            log.info("Deleting - " + s);
+            Files.delete(Paths.get(s));
+        }
+    }
 }
