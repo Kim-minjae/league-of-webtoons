@@ -41,7 +41,6 @@ public class WebtoonController {
             // when a user doesn't attach a file, which http status code should be returned?
             return ResponseEntity.ok(new ApiResponse(false, "please select a file"));
         }
-        System.out.println(createWebtoonRequest);
         try {
             webtoonService.uploadWebtoon(createWebtoonRequest, currentUser);
         } catch (IOException e) {

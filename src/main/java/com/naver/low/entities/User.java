@@ -56,10 +56,10 @@ public class User implements Serializable {
     private Set<Webtoon> userLikesWebtoons = new HashSet<>();
 
     @OneToMany(mappedBy = "challenger")
-    private Set<User> challengers = new HashSet<>();
+    private Set<Battle> challengers = new HashSet<>();
 
     @OneToMany(mappedBy = "opponent")
-    private Set<User> opponents = new HashSet<>();
+    private Set<Battle> opponents = new HashSet<>();
 
     public User(String userEmail, String userName, String userPassword) {
         this.userEmail = userEmail;
