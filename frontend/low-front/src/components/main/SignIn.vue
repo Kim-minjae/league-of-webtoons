@@ -36,10 +36,10 @@ export default {
         userEmail: this.email,
         password: this.password
       }).then(response => {
-        console.log(response)
         if (response.status === 200) {
           alert('로그인 성공')
-          this.$store.commit('setToken',response.data.token)
+          this.$store.commit('setToken',response.data.accessToken)
+          this.$store.dispatch('getUserInfo')
         } else if (response.status === 401) {
           alert('회원 정보를 확인하세요.')
         }

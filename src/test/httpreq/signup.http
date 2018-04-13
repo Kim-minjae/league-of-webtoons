@@ -3,10 +3,10 @@ POST http://localhost:8080/api/auth/signup
 Content-Type: application/json
 
 {
-	"username": "나야나",
-	"email": "nayana@gmail.com",
-	"password": "0987654321",
-	"role": 3
+	"username": "웹툰작가2야",
+	"email": "webtoonist2@gmail.com",
+	"password": "10101010",
+	"role": 2
 }
 
 ###

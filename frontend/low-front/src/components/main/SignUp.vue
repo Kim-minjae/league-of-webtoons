@@ -109,7 +109,7 @@ export default {
         password: this.password,
         role: this.picked
       }).then(response => {
-        if(response.status === 201) {
+        if (response.status === 201) {
           alert('회원가입 성공')
           this.$router.push('signin')
         }

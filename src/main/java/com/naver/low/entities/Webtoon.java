@@ -1,12 +1,15 @@
 package com.naver.low.entities;
 
-import lombok.Data;
+import lombok.*;
 
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Set;
 
-@Data
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Getter
+@Setter
 @Table(name = "webtoons")
 @Entity
 public class Webtoon implements Serializable {
@@ -21,6 +24,9 @@ public class Webtoon implements Serializable {
     @Column(name = "webtoon_description")
     private String webtoonDescription;
 
+    @Column(name = "webtoon_thumbnail")
+    private String webtoonThumbnail;
+
     @Column(name = "webtoon_image")
     private String webtoonImage;
 
@@ -33,4 +39,12 @@ public class Webtoon implements Serializable {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User webtoonist;
+
+    public Webtoon(String webtoonTitle, String webtoonDescription, String webtoonThumbnail, String webtoonImage, User webtoonist) {
+        this.webtoonTitle = webtoonTitle;
+        this.webtoonDescription = webtoonDescription;
+        this.webtoonThumbnail = webtoonThumbnail;
+        this.webtoonImage = webtoonImage;
+        this.webtoonist = webtoonist;
+    }
 }

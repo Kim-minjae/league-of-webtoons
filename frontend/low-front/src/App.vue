@@ -1,13 +1,12 @@
 <template>
   <div id="app">
     <div class="topnav">
-      <a href="#">QWE님</a>
+      <a href="#">{{useremail}}</a>
     </div>
     <div class="sidenav">
-      <a href="#">배틀</a>
-      <a href="#">Services</a>
-      <a href="#">Clients</a>
-      <a href="#">Contact</a>
+      <a href="#"><router-link to="signin">로그인</router-link></a>
+      <a href="#"><router-link to="signup">가입</router-link></a>
+      <a href="#"><router-link to="battle">배틀</router-link></a>
     </div>
 
     <div class="main">
@@ -18,7 +17,17 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  computed: {
+    useremail () {
+      let email = this.$store.state.useremail
+      if (email !== '') {
+        return email
+      } else {
+        return '로그인하세요'
+      }
+    }
+  }
 }
 </script>
 
