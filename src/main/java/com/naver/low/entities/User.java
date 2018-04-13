@@ -55,6 +55,12 @@ public class User implements Serializable {
             inverseJoinColumns = {@JoinColumn(name = "webtoon_id")})
     private Set<Webtoon> userLikesWebtoons = new HashSet<>();
 
+    @OneToMany(mappedBy = "challenger")
+    private Set<User> challengers = new HashSet<>();
+
+    @OneToMany(mappedBy = "opponent")
+    private Set<User> opponents = new HashSet<>();
+
     public User(String userEmail, String userName, String userPassword) {
         this.userEmail = userEmail;
         this.userName = userName;
