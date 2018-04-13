@@ -5,12 +5,17 @@ import com.naver.low.exceptions.ResourceNotFoundException;
 import com.naver.low.payloads.ApiResponse;
 import com.naver.low.payloads.CreateWebtoonRequest;
 import com.naver.low.payloads.WebtoonInfo;
+import com.naver.low.payloads.WebtoonSummary;
 import com.naver.low.repositories.WebtoonRepository;
 import com.naver.low.security.CurrentUser;
 import com.naver.low.security.UserPrincipal;
 import com.naver.low.services.WebtoonService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @Slf4j
 @AllArgsConstructor
@@ -99,7 +105,11 @@ public class WebtoonController {
     }
 
     //getWebtoonsAll
-
+    @GetMapping("/getWebtoonsAll")
+    public Page<Webtoon> getAllWebtoonsAll() throws IOException{
+        Pageable pageable = new PageRequest(0,5,Sort.unsorted());
+        return webtoonService.getAllWebtoonsAll(pageable);
+    }
 
     //getWebtoonsAllOfUser
 

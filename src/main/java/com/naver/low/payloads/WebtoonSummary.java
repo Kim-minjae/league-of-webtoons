@@ -12,6 +12,6 @@ public class WebtoonSummary {
     private Long id;
     private String webtoonTitle;
     private String webtoonThumbnail;
-    private String webtoonistName;
+    private Long webtoonist_id;
 
 }

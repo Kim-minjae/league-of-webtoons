@@ -4,11 +4,14 @@ import com.naver.low.entities.User;
 import com.naver.low.entities.Webtoon;
 import com.naver.low.exceptions.ResourceNotFoundException;
 import com.naver.low.payloads.CreateWebtoonRequest;
+import com.naver.low.payloads.WebtoonSummary;
 import com.naver.low.repositories.UserRepository;
 import com.naver.low.repositories.WebtoonRepository;
 import com.naver.low.security.UserPrincipal;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 
 @Slf4j
@@ -66,6 +70,12 @@ public class WebtoonService {
         String[] paths = {webtoon.getWebtoonImage(), webtoon.getWebtoonThumbnail()};
         deleteFiles(paths);
         webtoonRepository.deleteById(webtoonId);
+    }
+
+    //test 해봐야함. 페이지 리퀘스트도 만들어야함
+    public Page<Webtoon> getAllWebtoonsAll(Pageable pageable) throws IOException {
+        Page<Webtoon> webtoonPage = webtoonRepository.findAll(pageable);
+        return webtoonPage;
     }
 
     private String[] saveFiles(MultipartFile[] files, Long id) throws IOException {
