@@ -16,16 +16,38 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   name: 'App',
   computed: {
     useremail () {
-      let email = this.$store.state.useremail
-      if (email !== '') {
-        return email
+      let useremail = localStorage.getItem('useremail')
+      console.log(useremail)
+      if (useremail !== null) {
+        return useremail
       } else {
         return '로그인하세요'
       }
+    }
+  },
+  created: function () {
+    axios.interceptors.response.use(undefined, function (err) {
+      return new Promise(function (resolve, reject) {
+        if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
+        // if you ever get an unauthorized, logout the user
+          this.$auth.dispatch('authLogout')
+        // you can also redirect to /login if needed !
+        }
+        throw err;
+      })
+    })
+  },
+  methods: {
+    logout: function () {
+      this.$auth.dispatch(AUTH_LOGOUT)
+      .then(() => {
+        this.$router.push('/login')
+      })
     }
   }
 }

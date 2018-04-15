@@ -19,6 +19,8 @@
 
 <script>
 import axios from 'axios'
+import store from '@/store'
+
 const headers = {
   'Content-type': 'application/json'
 }
@@ -32,22 +34,35 @@ export default {
   },
   methods: {
     _signIn: function () {
-      axios.post("/api/auth/signin",{
-        userEmail: this.email,
-        password: this.password
-      }).then(response => {
-        if (response.status === 200) {
-          alert('로그인 성공')
-          this.$store.commit('setToken',response.data.accessToken)
-          this.$store.dispatch('getUserInfo')
-        } else if (response.status === 401) {
+      const { email, password } = this
+      this.store.dispatch('authRequest', { email, password }).then(() => {
+        this.$router.push('/')
+      }).catch(error => {
+        if (error.response.status === 401) {
           alert('회원 정보를 확인하세요.')
         }
-        
-      }).catch(error => {
-        console.log(error)
       })
     }
+    
+    // _signIn: function () {
+    //   axios.post("/api/auth/signin",{
+    //     userEmail: this.email,
+    //     password: this.password
+    //   }).then(response => {
+    //     if (response.status === 200) {
+    //       alert('로그인 성공')
+    //       this.$store.commit('setToken',response.data.accessToken)
+    //       this.$store.dispatch('setUserInfo').then((response) => {
+    //         console.log(response)
+    //         this.$router.push('/')
+    //       })
+    //     }
+    //   }).catch(error => {
+    //     if (error.response.status === 401) {
+    //       alert('회원 정보를 확인하세요.')
+    //     }
+    //   })
+    // }
   }
 }
 </script>
