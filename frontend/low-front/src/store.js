@@ -4,7 +4,7 @@ import axios from 'axios'
 
 Vue.use(Vuex)
 
-export const store = new Vuex.Store({
+export default new Vuex.Store({
   state: {
     token: localStorage.getItem('user-token') || '',
     status: ''
@@ -22,7 +22,7 @@ export const store = new Vuex.Store({
             const token = resp.data.accessToken
             localStorage.setItem('user-token', token)
             // Add the following line:
-            axios.defaults.headers.common['Authorization'] = token
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
             commit('authSuccess', resp)
             // dispatch('userRequest')
             resolve(resp)
@@ -45,6 +45,9 @@ export const store = new Vuex.Store({
     }
   },
   mutations: {
+    authLogout: (state) => {
+      state.token = ''
+    },
     authRequest: (state) => {
       state.status = 'loading'
     },

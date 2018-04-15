@@ -4,7 +4,7 @@
     <div id="signin-box">
       <div class="form-group">
         <label>email</label>
-        <input class="form-control" v-model="email"/>
+        <input class="form-control" v-model="userEmail"/>
       </div>
       <div class="form-group">
         <label>password</label>
@@ -28,14 +28,14 @@ export default {
   name: 'sign-in',
   data() {
     return {
-      email: '',
+      userEmail: '',
       password: ''
     }
   },
   methods: {
     _signIn: function () {
-      const { email, password } = this
-      this.store.dispatch('authRequest', { email, password }).then(() => {
+      const { userEmail, password } = this
+      this.$store.dispatch('authRequest', { userEmail, password }).then(() => {
         this.$router.push('/')
       }).catch(error => {
         if (error.response.status === 401) {

@@ -1,12 +1,18 @@
 <template>
   <div id="app">
     <div class="topnav">
-      <a href="#">{{useremail}}</a>
+      <div v-if="isAuthenticated">
+      <a href="#" @click="_logout">Logout</a>
+      </div>
+      <div v-else>
+        <a href="#">로그인 하세요</a>
+      </div>
     </div>
     <div class="sidenav">
-      <a href="#"><router-link to="signin">로그인</router-link></a>
-      <a href="#"><router-link to="signup">가입</router-link></a>
-      <a href="#"><router-link to="battle">배틀</router-link></a>
+      <a href="#" v-if="!isAuthenticated"><router-link to="signin">로그인</router-link></a>
+      <a href="#" v-if="!isAuthenticated"><router-link to="signup">가입</router-link></a>
+      <a href="#" v-if="isAuthenticated"><router-link to="mypage">내정보</router-link></a>
+      <a href="#" v-if="isAuthenticated"><router-link to="battle">배틀</router-link></a>
     </div>
 
     <div class="main">
@@ -20,14 +26,8 @@ import axios from 'axios'
 export default {
   name: 'App',
   computed: {
-    useremail () {
-      let useremail = localStorage.getItem('useremail')
-      console.log(useremail)
-      if (useremail !== null) {
-        return useremail
-      } else {
-        return '로그인하세요'
-      }
+    isAuthenticated () {
+      return this.$store.getters.isAuthenticated
     }
   },
   created: function () {
@@ -35,7 +35,7 @@ export default {
       return new Promise(function (resolve, reject) {
         if (err.status === 401 && err.config && !err.config.__isRetryRequest) {
         // if you ever get an unauthorized, logout the user
-          this.$auth.dispatch('authLogout')
+          this.$store.dispatch('authLogout')
         // you can also redirect to /login if needed !
         }
         throw err;
@@ -43,10 +43,10 @@ export default {
     })
   },
   methods: {
-    logout: function () {
-      this.$auth.dispatch(AUTH_LOGOUT)
+    _logout: function () {
+      this.$store.dispatch('authLogout')
       .then(() => {
-        this.$router.push('/login')
+        this.$router.push('/signIn')
       })
     }
   }
