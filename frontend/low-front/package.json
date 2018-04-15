@@ -16,6 +16,7 @@
     "highcharts": "^6.0.7",
     "jquery": "^3.3.1",
     "popper.js": "^1.14.3",
+    "sass": "^1.2.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"

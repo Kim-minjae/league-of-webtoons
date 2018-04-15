@@ -13,6 +13,7 @@
       <a href="#" v-if="!isAuthenticated"><router-link to="signup">가입</router-link></a>
       <a href="#" v-if="isAuthenticated"><router-link to="mypage">내정보</router-link></a>
       <a href="#" v-if="isAuthenticated"><router-link to="battle">배틀</router-link></a>
+      <a href="#" v-if="isAuthenticated"><router-link to="webtoon">웹툰 업로드</router-link></a>
     </div>
 
     <div class="main">

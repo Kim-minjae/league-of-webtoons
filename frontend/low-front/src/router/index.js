@@ -4,6 +4,7 @@ import SignUp from '@/components/main/SignUp'
 import SignIn from '@/components/main/SignIn'
 import BattleMain from '@/components/battle/BattleMain'
 import MyPage from '@/components/main/MyPage'
+import UploadWebtoon from '@/components/webtoon/UploadWebtoon'
 import store from '@/store' // your vuex store 
 Vue.use(Router)
 
@@ -40,6 +41,12 @@ export default new Router({
       path: '/mypage',
       name: 'MyPage',
       component: MyPage,
+      beforeEnter: ifAuthenticated
+    },
+    {
+      path: '/webtoon',
+      name: 'Webtoon',
+      component: UploadWebtoon,
       beforeEnter: ifAuthenticated
     },
     {

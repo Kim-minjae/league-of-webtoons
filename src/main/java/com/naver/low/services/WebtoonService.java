@@ -86,7 +86,7 @@ public class WebtoonService {
             byte[] bytes = files[i].getBytes();
             int indexOfDot = files[i].getOriginalFilename().lastIndexOf('.');
             String ext = files[i].getOriginalFilename().substring(indexOfDot);
-            Path path = Paths.get("/Users/augustine/webtoons/" + "webtoonist_" + id + (i == 0 ? "_webtoon" : "_thumbnail") + ext);
+            Path path = Paths.get("/Users/hs/webtoons/" + "webtoonist_" + id + (i == 0 ? "_webtoon" : "_thumbnail") + ext);
             uploadedFiles[i] = path.toString();
             log.info("Uploading - " + uploadedFiles[i]);
             Files.write(path, bytes);
